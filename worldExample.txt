@@ -1,0 +1,72 @@
+*           Format:          
+
+gameobject
+{
+	component(0)
+	{
+		//Insert the different data
+
+		x0;
+		y0;
+		//etc
+	}
+}
+
+
+*
+
+gameobject
+{
+	component(0)
+	{
+	x400;
+	y800;
+	}
+	component(1)
+	{
+	w40;
+	h40;
+	x400;
+	y800;
+	r255;
+	g0;
+	b255;
+	a255;
+	}
+	component(5)
+	{
+	x601;
+	y800;
+	}
+}
+gameobject
+{
+	component(0)
+	{
+	x800;
+	y400;
+	}
+	component(1)
+	{
+	w60;
+	h60;
+	x800;
+	y400;
+	r0;
+	g255;
+	b156;
+	a255;
+	}
+	component(2)
+	{
+	}
+	component(4)
+	{
+	r64;
+	g156;
+	b156;
+	a255;
+	}
+}
+
+* this should be ignored *
