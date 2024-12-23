@@ -31,7 +31,6 @@ void GameManager::DestroyInstance()
 
 void GameManager::Init()
 {
-	//aStar = new AStar(SCREEN_HEIGHT, SCREEN_WIDTH, 1);
 
 	AStar::CreateInstance();
 	AStar* aStar = AStar::GetInstance();
@@ -48,23 +47,14 @@ void GameManager::Init()
 
 	//Background
 
-	//GameObject* background = new GameObject;
-	//background->SetObjectID(GetNewObjectID());
 	GameObject* background = CreateNewGameObject();
 
 	background->SetTransform(CreateNewTransform(0, 0));
 	background->GetTransform()->SetGameObjectID(background->GetObjectID());
-
-	//background->SetRenderer(CreateNewRenderer(13000, 8000, -6000, 0, Color{ 0, 50, 25, 255 }));
 	background->SetRenderer(CreateNewRenderer(Vector2{ 13000, 8000 }, Vector2{ -6000, 0 }, Color{ 0, 50, 25, 255 }));
 	background->GetRenderer()->SetGameObjectID(background->GetObjectID());
 
-	//world.emplace(background->GetObjectID(), background);
-
 	//Player
-
-	//GameObject* player = new GameObject;
-	//player->SetObjectID(GetNewObjectID());
 
 	GameObject* player = CreateNewGameObject();
 
@@ -77,7 +67,6 @@ void GameManager::Init()
 	player->SetController(CreateNewController());
 	player->GetPlayerController()->SetGameObjectID(player->GetObjectID());
 
-	//player->SetRenderer(CreateNewRenderer(40, 40, 400, 280, Color{ 0, 100, 255, 255 }));
 	player->SetRenderer(CreateNewRenderer(Vector2{ 40, 40 }, Vector2{ 400, 280 }, Color{ 0, 100, 255, 255 }));
 	player->GetRenderer()->SetGameObjectID(player->GetObjectID());
 
@@ -85,8 +74,6 @@ void GameManager::Init()
 	player->GetCollisionColorChanger()->SetGameObjectID(player->GetObjectID());
 
 	LoadWorld();
-
-	//world.emplace(player->GetObjectID(), player);
 }
 
 void GameManager::Cleanup()
@@ -123,12 +110,10 @@ void GameManager::DoLoop()
 		{
 			if (colliderList[i]->GetIsColliding()) //if that collider is currently colliding
 			{
-				frameAllocator.Alloc<RectangleCollider*>(colliderList[i]); //TODO: Fix this so that it can allocate properly
+				frameAllocator.Alloc<RectangleCollider*>(colliderList[i]);
 				numCollisions++;
 			}
 		}
-
-		//std::cout << "NUM Collisions during this frame: " << numCollisions << std::endl;
 
 		UpdateWorld();
 		RenderWorld();
@@ -144,7 +129,6 @@ void GameManager::DoLoop()
 
 		frameAllocator.Reset();
 
-		//NO use after free bugs!!!!
 		frames = nullptr;
 		activeCollisions = nullptr;
 
@@ -157,7 +141,7 @@ void GameManager::LoadWorld()
 	//LoadComponentMap();
 
 	std::fstream file;
-	file.open(WORLD_FILE_PATH + WORLD_FILE_NAME); //NOTE: file must be placed in the out folder
+	file.open(WORLD_FILE_PATH + WORLD_FILE_NAME);
 
 	if (file.is_open() && file.good())
 	{
@@ -271,8 +255,10 @@ void GameManager::LoadWorld()
 					}
 					break;
 				case 2: //RectangleCollider
+					//No data for this component
 					break;
 				case 3: //PlayerController
+					//No data for this component
 					break;
 				case 4: //CollisionColorChanger
 					if (currentGO->GetRenderer() == nullptr || currentGO->GetCollisionColorChanger() == nullptr) //NOTE: Ensures that the color changer is not null when trying to add values to it
@@ -341,14 +327,11 @@ void GameManager::LoadWorld()
 			}
 			else
 			{
-				//TODO: Create a file input system that can read and understand the format
-
 				if (input == '(' || input == ')' || input == '{' || input == '}')
 				{
 					if (input == '}') //Ensures that it turns off the component loading when a component has been fully loaded. 
 					{
 						writingToComponent = false;
-						//previousInput = "";
 					}
 
 					if (inputStream == "gameobject" && !writingToComponent)
@@ -397,12 +380,6 @@ void GameManager::LoadWorld()
 								case 1: //RectangleRenderer
 									printf("\nCreating a rectangle render component on the gameobject\n");
 									GONewRenderer(currentGO);
-									/*currentGO->GetRenderer()->SetColor(Color{ 255, 0, 255, 255 });
-									currentGO->GetRenderer()->SetHeight(40);
-									currentGO->GetRenderer()->SetWidth(40);
-									*/
-									//currentGO->GetRenderer()->SetTopLeftX(400);
-									//currentGO->GetRenderer()->SetTopLeftY(800);
 									break;
 								case 2: //RectangleCollider
 									printf("\nCreating a rectangle collider component on the gameobject\n");
@@ -467,7 +444,6 @@ void GameManager::LoadComponentMap()
 int GameManager::LoadComponentValue(std::string stream)
 {
 	stream.erase(0, 1); //erases the first value in the stream
-	//inputStream.erase(inputStream.size() - 1);
 	return std::atoi(stream.c_str());
 }
 
@@ -697,24 +673,12 @@ void GameManager::UpdateWorld()
 	
 	unsigned int availableThreads = std::thread::hardware_concurrency();
 
-	/*if (availableThreads > 1)
-	{
-		threadList.reserve(availableThreads - 1);
-		gameObjectList.reserve(availableThreads - 1);
-		futureList.reserve(availableThreads - 1);
-		promiseList.reserve(availableThreads - 1);
-	}*/
-
 	for (i = 0; i < pathfinderList.size(); i++)
 	{
 		if (i < availableThreads - 1) //checks if any threads are available
 		{
-			//std::promise<MyTransform> promise;
 			promiseList.push_back(std::promise<MyTransform>());
-			
-			//std::future<MyTransform> future = promise.get_future();
 			futureList.push_back(promiseList[i].get_future());
-			//std::thread t;
 
 			GameObject* go = world[pathfinderList[i]->GetGameObjectID()];
 
@@ -723,9 +687,6 @@ void GameManager::UpdateWorld()
 			Pathfinder* p = pathfinderList[i];
 
 			GameManager* gm = GameManager::GetInstance();
-
-			//std::thread t(p->UpdateThreaded, std::move(promise), *go->GetTransform());
-			//std::thread t(&GameManager::ThreadedPathfindCall, gm, std::move(promiseList[i]), std::ref(*go->GetTransform()), std::ref(p));
 
 			threadList.push_back(std::thread(&GameManager::ThreadedPathfindCall, gm, std::move(promiseList[i]), std::ref(*go->GetTransform()), std::ref(p))); //= std::thread(&GameManager::ThreadedPathfindCall, gm, std::move(promiseList[i]), std::ref(*go->GetTransform()), std::ref(p));
 
@@ -741,12 +702,6 @@ void GameManager::UpdateWorld()
 			go->GetTransform()->SetY(newPosition.GetY());
 			go->GetTransform()->SetX(newPosition.GetX());
 		}
-		
-		//&ThreadedPathfindCall, std::move(promise), *go->GetTransform(), p);
-
-		//MyTransform newPosition = pathfinderList[i]->Update(*go->GetTransform());
-
-		//printf("\nTest\n");
 
 	}
 
@@ -774,7 +729,6 @@ void GameManager::UpdateWorld()
 			break;
 		case 6:
 			SaveWorld();
-			//TODO: Save the world
 			break;
 		}
 	}
@@ -832,8 +786,7 @@ void GameManager::UpdateWorld()
 	{
 		if (threadList[i].joinable())
 		{
-			threadList[i].join();
-			//t.join();
+			threadList[i].join();;
 
 			MyTransform newPosition = futureList[i].get();
 
@@ -841,8 +794,6 @@ void GameManager::UpdateWorld()
 
 			gameObjectList[i]->GetTransform()->SetY(newPosition.GetY());
 			gameObjectList[i]->GetTransform()->SetX(newPosition.GetX());
-			//go->GetTransform()->SetY(newPosition.GetY());
-			//go->GetTransform()->SetX(newPosition.GetX());
 		}
 	}
 	
@@ -867,15 +818,6 @@ void GameManager::RenderWorld()
 			}
 		}		
 	}
-
-	//NOTE: For testing grid system
-	//rlPushMatrix();
-	//	rlTranslatef(0, 25 * 50, 0);
-	//	rlRotatef(90, 1, 0, 0);
-	//	DrawGrid(1920, 2);
-	//rlPopMatrix();
-
-	//DrawGrid(1080, 10);
 }
 
 void GameManager::ClearWorld()
@@ -910,24 +852,17 @@ void GameManager::DebugFrames()
 
 void GameManager::SpawnBasicGameObject(MyTransform* playerTransform)
 {
-	//GameObject* go = new GameObject;
-	//go->SetObjectID(GetNewObjectID());
 	GameObject* go = CreateNewGameObject();
 
 	go->SetTransform(CreateNewTransform(playerTransform->GetX() + 10, playerTransform->GetY() + 10));
-	//GONewTransform(go);
-	//go->GetTransform()->SetX(playerTransform->GetX() + 10);
-	//go->GetTransform()->SetY(playerTransform->GetY() + 10);
 	go->GetTransform()->SetGameObjectID(go->GetObjectID());
 
 	go->SetCollider(CreateNewCollider());
 	go->GetCollider()->SetGameObjectID(go->GetObjectID());
 
-	//go->SetRenderer(CreateNewRenderer(80, 80, 800, 600, Color{ 255, 255, 0, 255 }));
 	go->SetRenderer(CreateNewRenderer(Vector2{ 80, 80 }, Vector2{ 800, 600 }, Color{ 255, 255, 0, 255 }));
 	go->GetRenderer()->SetGameObjectID(go->GetObjectID());
 
-	//world.emplace(go->GetObjectID(), go);
 }
 
 void GameManager::DeleteFromWorld(GameObject* go) //TODO: Fix runtime error with this function!

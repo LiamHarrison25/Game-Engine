@@ -142,8 +142,3 @@ private:
 	ComponentPool<Pathfinder> pathfinderPool;
 	std::vector<Pathfinder*> pathfinderList;
 };
-
-//enum ComponentTypes
-//{
-//	Typeransform, TypeRectangleRenderer, TypeRectangleCollider, TypeColorChanger, TypePlayerController
-//};

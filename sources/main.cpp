@@ -6,7 +6,7 @@
 
 const int TARGET_FPS = 60;
 
-#define WINDOW_TITLE "StructureOfArrays"
+#define WINDOW_TITLE "Game-Engine"
 
 int main(void)
 {
