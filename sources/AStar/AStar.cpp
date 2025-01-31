@@ -43,10 +43,10 @@ std::vector<MyTransform> AStar::CalculatePath(MyTransform start, MyTransform tar
 	//std::priority_queue<AStarNode> frontier;
 	std::unordered_map<int, MyTransform> cameFrom;  //NOTE: First came from second
 	std::vector<MyTransform> neighbors;	
-	std::unordered_map<int, double> totalCost;
+	std::unordered_map<int, Action> totalCost;
 
 	cameFrom[MyTransform::ConvertToOneD(grid->GetWidth(), start.GetX(), start.GetY())] = start;
-	totalCost[MyTransform::ConvertToOneD(grid->GetWidth(), start.GetX(), start.GetY())] = 0; //zero cost at the start
+	totalCost[MyTransform::ConvertToOneD(grid->GetWidth(), start.GetX(), start.GetY())] = Action(1); //zero cost at the start
 
 
 	MyTransform nextMove;
@@ -70,8 +70,8 @@ std::vector<MyTransform> AStar::CalculatePath(MyTransform start, MyTransform tar
 
 		for (MyTransform next : neighbors)
 		{
-			double nextCost = totalCost[MyTransform::ConvertToOneD(grid->GetWidth(), current.GetX(), current.GetY())] + 1;
-			totalCost[MyTransform::ConvertToOneD(grid->GetWidth(), next.GetX(), next.GetY())] = nextCost;
+			Action* nextAction = totalCost[MyTransform::ConvertToOneD(grid->GetWidth(), current.GetX(), current.GetY())] + 1;
+			totalCost[MyTransform::ConvertToOneD(grid->GetWidth(), next.GetX(), next.GetY())] = *nextAction;
 
 			//double priority = nextCost; //+ heuristic(next, target);
 			//AStarNode nextA(next, 0);

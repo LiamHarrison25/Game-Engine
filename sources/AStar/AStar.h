@@ -40,6 +40,50 @@ private:
 	Grid* grid;
 };
 
+enum ACTION_BASES
+{
+	move
+
+};
+
+struct Action
+{	
+	ACTION_BASES actionBase;
+
+	float cost;
+
+	float GetCost()
+	{
+		switch (actionBase)
+		{
+			case move:
+			{
+				return 1.0f * cost;
+				break;
+			}
+		}
+	}
+
+	//TODO: Instead of a switch, implement this with an abstract class with virtual functions. 
+
+	Action()
+	{
+		cost = 1.0f;
+	}
+
+	Action(float cost)
+	{
+		this->cost = cost;
+	}
+
+	Action* operator+(float k)
+	{
+		this->cost += k;
+		return this;
+	}
+
+};
+
 //template<>
 //struct std::hash<MyTransform>
 //{
