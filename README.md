@@ -40,7 +40,17 @@ Each game object can have multiple components, with the number corresponding to 
 ### Component types:
 
 * component(0): Transform
-* component(1): Rectangle Renderer 
+	* x: (float) x position value
+ 	* y: (float) y position value	 
+* component(1): Rectangle Renderer
+	* w: (float) width of the rectangle
+ 	* h: (float) height of the rectangle
+  	* x: (float) x position value
+ 	* y: (float) y position value
+  	* r: (float) red color value
+  	* g: (float) green color value
+  	* b: (float) blue color value
+  	* a: (float) alpha color value
 * component(2): Rectangle Collider
 * component(3): Player Controller
 * component(4): Collision Color Changer
